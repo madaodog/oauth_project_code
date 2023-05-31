@@ -218,11 +218,13 @@ class FindOAuthElements(PyChromeScript):
         return self.finished
 
     def window_open(self,url,windowName, windowFeatures, userGesture):
+        # Force new window to be opened in new tab in order to capture traffic
         print("New window opened? " + str(url))
         print(windowName, windowFeatures,userGesture)
         self.tab.Page.navigate(url=url)
 
     def target_created(self, targetInfo):
+        # Capture traffic whenever clicking a button resulted a new tab being opened
         if targetInfo["type"] == 'page':
             print("Oauth opened in new tab or window")
             new_tabs = [x for x in self.browser.list_tab() if x not in self.existing_tabs]
@@ -234,6 +236,8 @@ class FindOAuthElements(PyChromeScript):
             new_tab.Network.requestWillBeSent = self.request_will_be_sent2
 
     def get_attributes_without_ref(self, attributes):
+        # Remove href from the attributes
+
         new_attributes = attributes
         for i in range(0, len(attributes), 2):
             if "href" in attributes[i]:
@@ -241,10 +245,13 @@ class FindOAuthElements(PyChromeScript):
         return new_attributes
 
     def get_node_id_from_attributes(self, attributes):
+        # In order to find click on elements that we found in the previous step, we try to look for the same element based on the attributes
         root = self.tab.DOM.getDocument()["root"]["nodeId"]
         selector = self.build_selector(attributes)
         node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=selector)["nodeIds"]
         counter = 0
+        # Try to find the nodeid of the element with the given attributes. If no element is found, remove one attribute pair from
+        # the css selector and try again
         while len(node_ids) == 0 and counter < len(attributes)-1:
             new_attributes = attributes[:counter] + attributes[counter+2:]
             print("new attributes: " + str(new_attributes))
@@ -258,6 +265,7 @@ class FindOAuthElements(PyChromeScript):
 
 
     def build_selector(self, attr):
+        # Builds a css selector based on the attributes of an element.
         selector = ""
         if len(attr) > 2:
             for i in range(0, len(attr), 2):
@@ -269,6 +277,7 @@ class FindOAuthElements(PyChromeScript):
         return "*" + selector
 
     def click(self, nodeId, **kwargs):
+        # Initiate click on element
         if nodeId == 0:
             return
         print(nodeId)
@@ -288,6 +297,7 @@ class FindOAuthElements(PyChromeScript):
             print("Boxmodel failed on id", nodeId)
 
     def parse_scope(self, redirect):
+        # Extract scope from authorization link
         try:
             start_index = redirect.find("&scope")
             if "&" in redirect[start_index + 1:]:
@@ -313,18 +323,19 @@ class FindOAuthElements(PyChromeScript):
             print("Scope found for twitter: " + str(twitter_html_text))
 
     def check_if_link_in_redirect(self,redirect,link):
+        # Returns whether the authorization endpoint link matches with the given redirect url
         double_link = None
         if "{" and "}" in link:
             double_link = (link[:link.find("{")], link[link.find("}") + 1:])
         if double_link is None:
             return str(redirect).startswith(link)
         else :
-            # print(str(redirect).startswith(double_link[0]) and double_link[1] in str(redirect))
             return str(redirect).startswith(double_link[0]) and double_link[1] in str(redirect)
 
 
 
     def inspect_redirects(self):
+        # After clicking on a potential OAuth button, check all saved redirects for the presence of an authorization link from the IDP
         print("Inspect redirects")
         print(list(set(self.saved_redirects)))
         self.saved_redirects = list(set(self.saved_redirects))
@@ -372,13 +383,14 @@ class FindOAuthElements(PyChromeScript):
 
 
     def click_inital_button(self):
+        # Click on the button found in step 2
         print("Click initial button")
         if self.button is not None:
             self.click(self.get_node_id_from_attributes(self.button.get("attributes")))
-            # self.click(self.get_node_id_from_attributes(self.button))
             time.sleep(2)
 
     def wait_for_loaded(self, **kwargs):
+        # Click on the potential OAuth button and search  in all network traffic for the authorization endpoint URL
         print("Page loaded: " + self.tab.Target.getTargetInfo()["targetInfo"]["url"][:1000])
         time.sleep(5)
         if not self.clicked:
@@ -392,13 +404,14 @@ class FindOAuthElements(PyChromeScript):
 
 
     def request_will_be_sent(self, request, **kwargs):
-        # print("Request will be sent: " + request["url"])
+        # Capture network traffic
         url = request["url"][:1000]
         if not str(url).startswith("data:"):
             self.saved_redirects.append(url)
             self.saved_redirects = self.saved_redirects[:1000]
 
     def request_will_be_sent2(self, request, **kwargs):
+        # Capture network traffic in the case of a new tab being opened
         url = request["url"][:1000]
         if not str(url).startswith("data:"):
             self.saved_redirects.append(url)

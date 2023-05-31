@@ -34,7 +34,6 @@ class FindLoginLinks(PyChromeScript):
         self.tab.Target.setDiscoverTargets(discover=True)
         self.tab.Page.loadEventFired = self.wait_for_loaded
         self.max_visits_website = 5
-        self.queue = []
         self.login_links = []
         self.site = self.url
         self.finished = False
@@ -46,11 +45,10 @@ class FindLoginLinks(PyChromeScript):
         return self.finished
 
 
-
     def extract_elements(self, **kwargs):
         elements = []
 
-        # Add all buttons and a-tags
+        # Consider all buttons and a-tags
         root = self.tab.DOM.getDocument()["root"]["nodeId"]
         selector = "button,a"
         node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=selector)["nodeIds"][:1000]
@@ -69,7 +67,6 @@ class FindLoginLinks(PyChromeScript):
                 if len(event_listeners) != 0:
                     for el in event_listeners:
                         if el['type'] == "click" and nodeId is not None:
-                            # if len(self.tab.DOM.querySelectorAll(root=nodeId, selector='*') < 2):
                             outer_html = self.tab.DOM.getOuterHTML(nodeId=nodeId)["outerHTML"][:1000]
                             elements.append((nodeId, outer_html))
                             if counter_max_elements_check == 1000:
@@ -84,6 +81,9 @@ class FindLoginLinks(PyChromeScript):
 
 
     def score_element_login(self, element_tokens):
+        # Assign a score of how likely it is that the element is a login button. The score is based on the occurence of keywords
+        # in the outerHTML of the element. The higher the score, the more likely it is that the element is a login button.
+        # Common login words affect the score in a positive way, while words related to cookie banners affect the score in a negative way.
         score = 0
         for word in login_button_words:
             if word in element_tokens:
@@ -96,22 +96,15 @@ class FindLoginLinks(PyChromeScript):
                 score -= 1
         return score
 
-    def isVisible(self, button_id):
-        css = self.tab.CSS.getComputedStyleForNode(nodeId=button_id)['computedStyle']
-        css_filtered = [prop for prop in css if prop.get('name') == 'visibility' or prop.get('name') == 'display']
-        return css_filtered[0].get('value') != 'hidden' or 'collapse' or 'none' and css_filtered[1].get(
-            'value') != 'hidden' or 'collapse' or 'none'
-
     def find_potential_login_buttons(self,elements):
+        # Scores each element and returns the ones with a positive score
         potential_elements = []
         for button_id, button_html in elements:
-            # if self.isVisible(button_id):
             cleaned_html = pattern.sub(" ", button_html.lower())
             score = self.score_element_login(cleaned_html)
-
+            # Only consider elements with a positive score
             if score > 0:
                 attributes = self.tab.DOM.getAttributes(nodeId=button_id)
-                sys.getsizeof(attributes)
                 potential_elements.append((button_id, score, attributes))
         return potential_elements
 
@@ -121,25 +114,30 @@ class FindLoginLinks(PyChromeScript):
         elements.reverse()
         return elements
 
-    def add_login_buttons_to_queue(self):
+    def extract_candidate_login_buttons(self):
+        candidate_login_buttons = []
         all_elements = self.extract_elements()
         potential_login_buttons = self.find_potential_login_buttons(all_elements)
         sorted_login_buttons = self.sort_buttons(potential_login_buttons)
-        self.queue.extend(sorted_login_buttons[:self.max_visits_website + 1])
-        print("queue: " + str(self.queue))
+        candidate_login_buttons.extend(sorted_login_buttons[:self.max_visits_website + 1])
+        return candidate_login_buttons
 
     def wait_for_loaded(self, **kwargs):
-        print("New page: " + self.tab.Target.getTargetInfo()["targetInfo"]["url"], self.queue)
+        # When page is loaded, extract candidate login buttons
+        print("New page: " + self.tab.Target.getTargetInfo()["targetInfo"]["url"])
         time.sleep(5)
-        self.add_login_buttons_to_queue()
+        candidate_login_buttons = self.extract_candidate_login_buttons()
 
         # Add all login links to database
+        # We consider the homepage and 3 common links where the login/signup page can be found as input for the next
+        # step (searching for OAuth  buttons) along with the 6 potential login buttons on the page with the highest score.
         self.login_links.append((self.site,None))
         self.login_links.append((str(self.site) + "/login",None))
         self.login_links.append((str(self.site) + "/account", None))
         self.login_links.append((str(self.site) + "/signin", None))
-        for element in self.queue:
+        for element in candidate_login_buttons:
             if len(self.login_links) < 10:
+                # add link and attributes of login button to the results
                 self.login_links.append((self.site,element[2]))
         self.finished = True
 

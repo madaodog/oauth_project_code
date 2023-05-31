@@ -56,8 +56,6 @@ class PyChromeScript():
                 f.write(str(content))
 
     def run_javascript(self, code, frame_id=None):
-        # TODO: performance improvement: keep track of frames with Page.frameAttached
-        # TODO: performance improvement: turn self.isolated_contexts in a singleton (this would remove isolation between different scripts though)
         try:
             if frame_id is None:
                 frame_tree = self.tab.Page.getFrameTree()

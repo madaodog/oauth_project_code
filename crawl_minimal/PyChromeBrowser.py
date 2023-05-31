@@ -82,8 +82,6 @@ class PyChromeBrowser():
 
         self.tab.Page.navigate(url=url)
 
-        # TODO: allow scripts to extend the waiting period
-        # TODO: allow scripts to report that they are finished, such that results can be collected earlier?
         time.sleep(self.settings.get('page_load_wait', 5))
 
         self.navigate_done = time.time()
@@ -145,7 +143,9 @@ class PyChromeBrowser():
         elif platform == 'win32':
             CHROME_LOCATION = 'C:/Program Files (x86)/Google/Chrome/Application/chrome'
         else:
-            CHROME_LOCATION = 'chromium-browser'
+            #TODO change this
+            # CHROME_LOCATION = 'chromium-browser'
+            CHROME_LOCATION = '/usr/bin/google-chrome'
 
         command = [CHROME_LOCATION]
         if not self.settings.get("headless", True):
@@ -196,11 +196,6 @@ class PyChromeBrowser():
 
         self.browser_ready.wait(15)
 
-        # TODO: monitor CPU/RAM usage
-        # p = psutil.Process(self.pid)
-        # p.cpu_percent(interval=1.0)
-        # p.memory_percent()
-
         self.browser = pychrome.Browser(url='http://{}:{}'.format(self.debugging_address, self.debugging_port))
         self.__orig_tab = self.browser.new_tab()
         self.tab = Proxy(self.__orig_tab)
@@ -235,7 +230,6 @@ class PyChromeBrowser():
             self.all_results.update({"error": "Soft time limit exceeded", "success": False, "partial": True})
         self.logger.debug('Stopping & closing tab + browser')
         if self.tab is not None:
-            # TODO: timeout may not work here...
             self.tab.stop()
             try:
                 self.browser.close_tab(self.__orig_tab, timeout=5)
@@ -272,9 +266,9 @@ if __name__ == '__main__':
             "GetSecurityState",
             "StoreHTML",
             "StorePageSnapshot",
-            "TakeScreenshot",
-            "StoreHTMLAllFrames",
-            "StoreResponseBodies"
+            # "TakeScreenshot",
+            # "StoreHTMLAllFrames",
+            # "StoreResponseBodies"
         ],
         "max_page_visits": 1,
         "page_load_wait": 30,
@@ -293,54 +287,15 @@ if __name__ == '__main__':
         "allow_multiple_snapshots": True,
 
     }, "entry": {"config": {}}}, output_dir) as browser:
-        # results = browser.visit("https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html")
-        # results = browser.visit("https://ic2gq.check-this-out-now.online/arrowLP/?tag=66001&tag1=software_udate&tag2=14561697&tag3=66001&tag4=dating&clickid=bd9da62237b64066dcb13cd99e72a6e2-4888-0626&device=Desktop&brand=Desktop&model=Desktop&country=CA&affid=66001&subid=14561697&ln=en&cid=usd&useragent=%257Bvar%3Auseragent%257D&ip=70.77.96.16&bv=Chrome%252074&as=pc&b=2&blkt=1&blk=0")
-        # results = browser.visit("https://bot.sannysoft.com/")
 
-        # from https://blog.ermer.de/2018/06/11/chrome-67-provisional-headers-are-shown/
-        # results = browser.visit("https://www.green-run.de/?awc=12684_1573116259_a172c2460eda786ba0c7b9ba6171a003")
-
-        # results = browser.visit("https://www.justia.com/")
-        # results = browser.visit("https://stackoverflow.com/users/login?ssrc=head")
-        # browser.visit("http://api.quotes.com/eb2ccd9a-4d82-11ea-92e3-d6aab2a67283")
-        # browser.visit("https://www.pushengage.com/demo")
-        # TODO test with weird website (m-twitter.com or so)
-        browser.visit("http://bostob.com")
-
-        # browser.visit("https://bitly.com/a/sign_in")
+        browser.visit("http://example.com")
 
         results = browser.all_results
         print(results)
-        # pprint.pprint(browser.all_results["console_messages"])
-
-        # pprint.pprint(browser.all_results["protocol_messages"])
-
-    # time.sleep(5)
-    #
-    # with PyChromeBrowser(9222, {"settings": {
-    #     "scripts": ["AvoidHeadlessDetection", "GetServiceWorkerRequests", "DetectNotificationPermissionRequest",
-    #                 "GrantPermissions", "LogConsoleMessages", "GetMainRequest", "GetAllRequests", "TakeScreenshot"],
-    #     # "DetectPushSubscription",
-    #     "timeout": 15, "page_load_wait": 10,
-    #     # "headless": False,
-    #     "permission_origin": "http://localhost:9090/",
-    #     "permissions": ["notifications"],
-    #     "next_urls": False,
-    #     "window-width": 900, "window-height": 600, "screen-width": 1920, "screen-height": 1080,
-    #     # "disable_isolation": True,
-    # }, "entry": {"config": {}}}, output_dir) as browser:
-    #     # results = browser.visit("https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html")
-    #     # results = browser.visit("https://ic2gq.check-this-out-now.online/arrowLP/?tag=66001&tag1=software_udate&tag2=14561697&tag3=66001&tag4=dating&clickid=bd9da62237b64066dcb13cd99e72a6e2-4888-0626&device=Desktop&brand=Desktop&model=Desktop&country=CA&affid=66001&subid=14561697&ln=en&cid=usd&useragent=%257Bvar%3Auseragent%257D&ip=70.77.96.16&bv=Chrome%252074&as=pc&b=2&blkt=1&blk=0")
-    #     # results = browser.visit("https://bot.sannys/oft.com/")
-    #
-    #     # from https://blog.ermer.de/2018/06/11/chrome-67-provisional-headers-are-shown/
-    #     results_without_isolation = browser.visit("https://www.green-run.de/?awc=12684_1573116259_a172c2460eda786ba0c7b9ba6171a003")
 
     print(time.time())
 
     with open(output_dir + "/output/" + "results.json", "w") as output_file:
         json.dump(results, output_file)
 
-    # pprint.pprint(results)
-    #
-    # print(diff(results_without_isolation, results_with_isolation))
+

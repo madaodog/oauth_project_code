@@ -58,6 +58,7 @@ class FindOauthLinks(PyChromeScript):
         self.site = entry_config.get("site", None)
 
         self.node_index = 0
+        # Limit the number of OAuth buttons that can be returned
         self.max_check_buttons = 10
         self.clicked = False
         self.finished = False
@@ -245,25 +246,22 @@ class FindOauthLinks(PyChromeScript):
             "meiutan": "https://openapi.waimai.meituan.com/oauth/authorize",
             "tiktok": "https://open-api.tiktok.com/platform/oauth/connect/"
         }
-        print(f"website being viisted: {self.url}")
+        print(f"Website being visted: {self.url}")
 
 
     def is_finished(self):
         return self.finished
 
+
     def window_open(self,url,**kwargs):
+        # Force new window to be opened in same tab in order to capture traffic
         print("New window opened? " + str(url))
         self.tab.Page.navigate(url=url)
-
-    def getAllNodeIDs(self, **kwargs):
-        root = self.tab.DOM.getDocument()["root"]["nodeId"]
-        selector = "button,a"
-        node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=selector)["nodeIds"]
 
     def extract_elements(self, **kwargs):
         elements = []
 
-        # Add all buttons and a-tags
+        # Consider all buttons and a-tags
         root = self.tab.DOM.getDocument()["root"]["nodeId"]
         selector = "button,a"
         node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=selector)["nodeIds"][:1000]
@@ -295,16 +293,19 @@ class FindOauthLinks(PyChromeScript):
         return elements
 
     def get_node_id_from_attributes(self, attributes):
+        # In order to find click on elements that we found in the previous step, we try to look for the same element based on the attributes
         selector = self.build_selector(attributes)
         root = self.tab.DOM.getDocument()["root"]["nodeId"]
-        print(selector)
         node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=selector)["nodeIds"]
+        # Try to find the nodeid of the element with the given attributes. If the query selector returns more than one element,
+        # keep trying to find the right nodeid by iterating over the list of elements with the given attributes.
         if len(node_ids) == 1:
             return node_ids[0]
         elif len(node_ids) > 1:
             self.node_index += 1
             return node_ids[self.node_index]
         else:
+            # id node could not be found based on the attributes, try to remove href (might be dynamic) and try again
             print("Trying again without href")
             attributes = self.get_attributes_without_ref(attributes)
             print("New attributes : " + str(attributes))
@@ -318,6 +319,9 @@ class FindOauthLinks(PyChromeScript):
                 return None
 
     def score_element_oauth(self, element_tokens):
+        # Assign a score of how likely it is that the element is an OAuth button. The score is based on the occurence of keywords
+        # in the outerHTML of the element. The higher the score, the more likely it is that the element is an OAuth button.
+        # Common OAuth words affect the score in a positive way, while words related to social plugins affect the score in a negative way.
         score = 0
         currentProviders = set()
         providers_to_consider = [p for p in self.confirmation_oauth_links.keys() if p not in pattern.sub("" ,self.url)]
@@ -325,6 +329,7 @@ class FindOauthLinks(PyChromeScript):
             if " " in word:
                 words = word.split(" ")
                 for provider in providers_to_consider:
+                    # search for the combination of an OAuth word together with the name of an IDP e.g. "login with Facebook"
                     if words[0] in element_tokens and words[1] in element_tokens and provider in element_tokens:
                         score += 5
                         currentProviders.add(provider)
@@ -345,9 +350,11 @@ class FindOauthLinks(PyChromeScript):
         for word in social_plugin_words:
             if word in element_tokens:
                 score -= 1
+        # If the name of an IDP was found, then consider this to be the potential IDP for the candidate OAuth button
         return score, currentProviders
 
     def find_potential_oauth_buttons(self,elements):
+        # Score each element and return the ones with a positive score as a candidate OAuth button
         potential_elements = []
         for button_id, button_html in elements:
             cleaned_html = pattern.sub(" ", button_html.lower())
@@ -355,29 +362,13 @@ class FindOauthLinks(PyChromeScript):
             if score > 0:
                 if len(providers) == 1:
                     attributes = self.tab.DOM.getAttributes(nodeId=button_id)
+                    # Each potential element consists of the nodeid, the assigned score, the assigned IDP and the
+                    # attributes of the element
                     potential_elements.append((button_id, score, list(providers)[0], attributes))
         print("Potential oauth buttons:" + str(potential_elements))
         return potential_elements
-
-    def buildSelector(self, attributes):
-        selector = ""
-        attr = attributes["attributes"]
-        if len(attr) > 2:
-            for i in range(0, len(attr), 2):
-                if attr[i + 1] != "":
-                    selector += '[' + attr[i] + '*="' + attr[i + 1] + '"]'
-                else:
-                    selector += '[' + attr[i] + ']'
-        else:
-            selector = '[' + attr[0] + '*="' + attr[1] + '"]'
-        return "a" + selector + ", button" + selector
-
-    def sort_buttons(self, elements):
-        elements.sort(key=lambda tup: tup[1])
-        elements.reverse()
-        return elements
-
     def click(self, nodeId, **kwargs):
+        # Initate click on element
         if nodeId == 0:
             return
         print("node being clicked on: " + str(nodeId))
@@ -398,13 +389,16 @@ class FindOauthLinks(PyChromeScript):
         except:
             print("Boxmodel failed on id", nodeId)
 
+
     def get_similarity_score(self, first, second):
+        # Calculate a similarity score for two strings
         return SequenceMatcher(None, str(first), str(second)).ratio()
 
     def look_for_other_providers(self, button, already_found):
+        # Search for OAuth buttons of unknown IDPs by looking for elements with a similar layout as the OAuth buttons that
+        # are already found
         other_providers_buttons = []
         print("Looking for other potential providers")
-        print(button,already_found)
         all_elements = self.extract_elements()
         for node_id in all_elements:
             attributes = self.tab.DOM.getAttributes(nodeId=node_id[0])["attributes"]
@@ -419,9 +413,11 @@ class FindOauthLinks(PyChromeScript):
                 if score > 0.85:
                     # print("Potential candidate for other provider found")
                     other_providers_buttons.append((0, "unknown", attributes))
+        # Consider elements which have a similarity score of at least 85%
         return other_providers_buttons
 
     def build_selector(self, attr):
+        # Builds a css selector based on the attributes of an element.
         selector = ""
         if len(attr) > 2:
             for i in range(0, len(attr), 2):
@@ -434,36 +430,21 @@ class FindOauthLinks(PyChromeScript):
         return "a" + selector + ", button" + selector
 
     def get_attributes_without_ref(self, attributes):
+        # Remove href from the attributes
         new_attributes = attributes
         for i in range(0, len(attributes), 2):
             if "href" in attributes[i]:
                 new_attributes = attributes[:i] + attributes[i + 2:]
         return new_attributes
 
-    def get_node_id_from_attributes(self, attributes):
-        selector = self.build_selector(attributes)
-        root = self.tab.DOM.getDocument()["root"]["nodeId"]
-        node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=selector)["nodeIds"]
-        if len(node_ids) == 1:
-            return node_ids[0]
-        elif len(node_ids) > 1:
-            self.node_index += 1
-            return node_ids[self.node_index]
-        else:
-            print("Trying again without href")
-            attributes = self.get_attributes_without_ref(attributes)
-            print("New attributes : " + str(attributes))
-            new_selector = self.build_selector(attributes)
-            root = self.tab.DOM.getDocument()["root"]["nodeId"]
-            node_ids = self.tab.DOM.querySelectorAll(nodeId=root, selector=new_selector)["nodeIds"]
-            if len(node_ids) != 0:
-                return node_ids[0]
-            else:
-                return None
+    def sort_buttons(self, elements):
+        elements.sort(key=lambda tup: tup[1])
+        elements.reverse()
+        return elements
 
     def check_for_oauth(self):
+        # Extract all candidate OAuth elements
         elements = self.extract_elements()
-        print(len(elements))
         potential_elements_oauth = self.find_potential_oauth_buttons(elements)
         oauth_buttons = []
         if len(potential_elements_oauth) != 0:
@@ -474,16 +455,19 @@ class FindOauthLinks(PyChromeScript):
             if len(other_providers_buttons) != 0:
                 oauth_buttons = (sorted_oauth_elements + other_providers_buttons)[:self.max_check_buttons]
             else:
+                # OAuth buttons consist of the provider and attributes of the element
                 oauth_buttons = [(x[2],x[3]) for x in sorted_oauth_elements[:self.max_check_buttons]]
         return oauth_buttons
 
     def click_inital_button(self):
+        # Click on the button found in step 1
         print("Click initial button")
         if self.login_button is not None:
             self.click(self.get_node_id_from_attributes(self.login_button))
             time.sleep(2)
 
     def wait_for_loaded(self, **kwargs):
+        # Click on login button and search for OAuth buttons
         print("New page: " + self.tab.Target.getTargetInfo()["targetInfo"]["url"])
         time.sleep(10)
         # fist link visited on domain
@@ -500,9 +484,7 @@ class FindOauthLinks(PyChromeScript):
             self.oauth_link = self.tab.Target.getTargetInfo()["targetInfo"]["url"]
             self.finished = True
 
-
     def target_info_changed(self, **kwargs):
-        # print("Target info changed")
         if kwargs["targetInfo"]["type"] == "page":
             print("Navigated to:", kwargs["targetInfo"]["url"])
 
