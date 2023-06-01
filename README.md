@@ -10,7 +10,7 @@ For more details, we refer you to our [full paper]().
 
 ## Crawler
 All code for our crawler is available [here](https://github.com/ydimova/oauth_project_code/tree/master).
-Only Ubuntu systems are supported.
+Currently, only Ubuntu systems are supported.
 
 The crawler we designed for this study works in multiple steps which build upon one another:
 1. Searching for login buttons on the homepage of a website
@@ -31,7 +31,7 @@ We include multiple datasets from our study:
 ## License
 MIT License
 
-Copyright (c) [2023] [DistriNet]
+Copyright (c) 2023 DistriNet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
