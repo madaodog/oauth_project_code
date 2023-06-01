@@ -29,7 +29,7 @@ def step_2_find_oauth_buttons():
     # config = {"site": "https://bookmeter.com", "login_button": { 'attributes': ["href", "/signup"]}}
     with PyChromeBrowser(0, {"settings": {"scripts": ["2-FindOAuthElements"], "headless": False},
                              "entry": {"config": config}}, workdir) as browser:
-        results = browser.visit('https://bookmeter.com/')
+        results = browser.visit('https://bookmeter.com/login')
         print(json.dumps(results, indent=4))
 
 
