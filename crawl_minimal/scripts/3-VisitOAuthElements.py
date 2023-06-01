@@ -220,7 +220,6 @@ class FindOAuthElements(PyChromeScript):
     def window_open(self,url,windowName, windowFeatures, userGesture):
         # Force new window to be opened in new tab in order to capture traffic
         print("New window opened? " + str(url))
-        print(windowName, windowFeatures,userGesture)
         self.tab.Page.navigate(url=url)
 
     def target_created(self, targetInfo):
@@ -228,7 +227,6 @@ class FindOAuthElements(PyChromeScript):
         if targetInfo["type"] == 'page':
             print("Oauth opened in new tab or window")
             new_tabs = [x for x in self.browser.list_tab() if x not in self.existing_tabs]
-            print(new_tabs)
             new_tab = new_tabs[0]
             self.existing_tabs.append(new_tab)
             new_tab.start()
@@ -280,7 +278,6 @@ class FindOAuthElements(PyChromeScript):
         # Initiate click on element
         if nodeId == 0:
             return
-        print(nodeId)
         resolveNode = self.tab.DOM.resolveNode(nodeId=nodeId)
         RemoteObjectId = resolveNode.get('object').get("objectId")
         self.tab.Runtime.callFunctionOn(objectId=RemoteObjectId, functionDeclaration='(function() { this.click(); })')
@@ -337,7 +334,6 @@ class FindOAuthElements(PyChromeScript):
     def inspect_redirects(self):
         # After clicking on a potential OAuth button, check all saved redirects for the presence of an authorization link from the IDP
         print("Inspect redirects")
-        print(list(set(self.saved_redirects)))
         self.saved_redirects = list(set(self.saved_redirects))
         if self.provider == "twitter":
             self.inspect_html_twitter()
@@ -354,7 +350,6 @@ class FindOAuthElements(PyChromeScript):
                             self.provider_confirmed = True
                             if "scope" in redirect:
                                 print("Found scope of provider " + self.provider)
-                                print(redirect)
                                 self.scopes.append((self.parse_scope(redirect)[:1000], redirect))
 
                         if self.check_if_link_in_redirect(redirect, provider_link[1]):
@@ -362,7 +357,6 @@ class FindOAuthElements(PyChromeScript):
                             self.provider_confirmed = True
                             if "scope" in redirect:
                                 print("Found scope of provider " + self.provider)
-                                print(redirect)
                                 self.scopes.append((self.parse_scope(redirect)[:1000], redirect))
                             break
                     else:
@@ -371,14 +365,12 @@ class FindOAuthElements(PyChromeScript):
                             self.provider_confirmed = True
                             if "scope" in redirect:
                                 print("Found scope of provider " + self.provider)
-                                print(redirect)
                                 self.scopes.append((self.parse_scope(redirect)[:1000], redirect))
                             break
                 else:
                     # check if client_id in url, scope van be unspecified
                     if "client_id=" in redirect:
                         print("Found scope of provider " + self.provider)
-                        print(redirect)
                         self.scopes.append((self.parse_scope(redirect)[:1000], redirect))
 
 
