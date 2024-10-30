@@ -1,0 +1,47 @@
+2024-10-30 12:58:37,894 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 12:58:37,895 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/login
+2024-10-30 12:58:38,156 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:05:59,925 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:05:59,927 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/login
+2024-10-30 13:06:00,005 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:07:11,706 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:07:11,707 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/login
+2024-10-30 13:07:11,780 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:07:47,816 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:07:47,817 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:07:47,888 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:09:55,914 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:09:55,914 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:09:55,983 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:10:52,492 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:10:52,493 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:10:52,562 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:11:45,461 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:11:45,462 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:11:45,542 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:18:34,214 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:18:34,215 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:18:34,292 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:19:17,107 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:19:17,108 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:19:17,182 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:21:39,264 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:21:39,265 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:21:39,344 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 13:24:04,534 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 13:24:04,539 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 13:24:41,046 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 14:03:49,724 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 14:03:49,724 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 14:04:26,128 - PyChromeBrowser - [DEBUG]  Retrieving crawl results...
+2024-10-30 14:04:26,172 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 14:05:34,502 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 14:05:34,503 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/
+2024-10-30 14:05:43,936 - PyChromeBrowser - [DEBUG]  Retrieving crawl results...
+2024-10-30 14:05:43,939 - PyChromeBrowser - [DEBUG]  Crawl results retrieved.
+2024-10-30 14:05:43,947 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser
+2024-10-30 14:07:36,801 - PyChromeBrowser - [DEBUG]  Launched new browser process
+2024-10-30 14:07:36,802 - PyChromeBrowser - [DEBUG]  Visiting URL: https://bookmeter.com/login
+2024-10-30 14:07:52,045 - PyChromeBrowser - [DEBUG]  Retrieving crawl results...
+2024-10-30 14:07:52,059 - PyChromeBrowser - [DEBUG]  Crawl results retrieved.
+2024-10-30 14:07:52,079 - PyChromeBrowser - [DEBUG]  Stopping & closing tab + browser

@@ -48,6 +48,6 @@ def step_3_visit_oauth_buttons():
         print(json.dumps(results, indent=4))
 
 
-# step_1_find_login_buttons()
+#step_1_find_login_buttons()
 step_2_find_oauth_buttons()
 # step_3_visit_oauth_buttons()

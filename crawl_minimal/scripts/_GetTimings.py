@@ -5,7 +5,8 @@ import time
 
 class _GetTimings(PyChromeScript):
     def __init__(self,browser, tab, url, setting, workdir):
-        super().__init__(browser, tab,  url, setting, workdir)
+        print(url)
+        super().__init__(browser, tab, url, setting, workdir)
         self.load_event_time = None
         self.tab.Page.loadEventFired = self.onload_handler
 

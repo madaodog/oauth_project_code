@@ -88,7 +88,9 @@ class PyChromeScript():
         return ''
 
     def get_top_domain(self, url):
-        return '.'.join(PyChromeScript.extract(url)[-2:])
+        print(url)
+        res = self.extract(url)
+        return '.'.join([res.domain, res.suffix])
 
     def is_finished(self):
         return True

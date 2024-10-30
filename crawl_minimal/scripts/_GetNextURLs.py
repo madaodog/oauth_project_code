@@ -17,7 +17,8 @@ class _GetNextURLs(PyChromeScript):
             sldn_val = '"%s"' % self.settings['first_party_domain']
         else:
             extract = tldextract.TLDExtract()
-            sldn_val = '"%s"' % '.'.join(extract(self.url)[-2:])
+            res = extract(self.url)
+            sldn_val = '"%s"' % '.''.'.join([res.domain, res.suffix])
 
         follow_subdomains_str = 'true' if self.settings.get('follow_subdomains', True) else 'false'
 

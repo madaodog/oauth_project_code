@@ -141,7 +141,7 @@ class PyChromeBrowser():
         if platform == 'darwin':
             CHROME_LOCATION = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
         elif platform == 'win32':
-            CHROME_LOCATION = 'C:/Program Files (x86)/Google/Chrome/Application/chrome'
+            CHROME_LOCATION = 'C:/Program Files/Google/Chrome/Application/chrome'
         else:
             #TODO change this
             # CHROME_LOCATION = 'chromium-browser'
