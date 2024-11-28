@@ -17,26 +17,26 @@ def step_1_find_login_buttons():
                              # Set headless to false for optimal performance
                              "entry": {"config": {}}}, workdir) as browser:
         # Website to be visited
-        results = browser.visit('https://bookmeter.com/')
+        results = browser.visit('https://dropbox.com/')
         print(json.dumps(results, indent=4))
 
 
 # Step 2: Visit link and click on potential login button (unless None) and search for OAuth buttons
 def step_2_find_oauth_buttons():
     # Example input for step 2
-    config = {"site": "https://bookmeter.com/login", "login_button": None}
+    config = {"site": "https://dropbox.com/login", "login_button": None}
     # Other example input
     # config = {"site": "https://bookmeter.com", "login_button": { 'attributes': ["href", "/signup"]}}
     with PyChromeBrowser(0, {"settings": {"scripts": ["2-FindOAuthElements"], "headless": False},
                              "entry": {"config": config}}, workdir) as browser:
-        results = browser.visit('https://bookmeter.com/login')
+        results = browser.visit('https://dropbox.com/login')
         print(json.dumps(results, indent=4))
 
 
 # Step 3: Visit link and click on potential OAuth button and extract scope from authorization request
 def step_3_visit_oauth_buttons():
     # example input for part 3:
-    config = {"oauth_button": ['facebook', {'attributes': [
+    config = {"site": "https://dropbox.com/login", "oauth_button": ['facebook', {'attributes': [
                     "class",
                     "btn btn--facebook",
                     "href",
@@ -44,10 +44,27 @@ def step_3_visit_oauth_buttons():
                 ]}]}
     with PyChromeBrowser(0, {"settings": {"scripts": ["3-VisitOAuthElements"], "headless": False},
                              "entry": {"config": config}}, workdir) as browser:
-        results = browser.visit('https://bookmeter.com/signup')
+        results = browser.visit('https://dropbox.com/login')
+
+        print(json.dumps(results, indent=4))
+
+def step_4_find_oauth_urls():
+    # example input for part 4:
+    config = {"site": "", "oauth_button": ['facebook', {'attributes': [
+                    "class",
+                    "btn btn--facebook",
+                    "href",
+                    "/users/linkages/facebook/authenticate"
+                ]}]}
+    with PyChromeBrowser(0, {"settings": {"scripts": ["4-FindOAuthURLs"], "headless": False},
+                             "entry": {"config": config}}, workdir) as browser:
+        results = browser.visit('dirtylink')
+
         print(json.dumps(results, indent=4))
 
 
 #step_1_find_login_buttons()
-step_2_find_oauth_buttons()
-# step_3_visit_oauth_buttons()
+#step_2_find_oauth_buttons()
+#step_3_visit_oauth_buttons()
+step_4_find_oauth_urls()
+

@@ -1,0 +1,150 @@
+
+{
+    "final_url": {
+        "url": "https://bookmeter.com/login",
+        "domain": "bookmeter.com"
+    },
+    "next_urls": [],
+    "website": "https://bookmeter.com/login",
+    "oauth_buttons": [
+        [
+            183,
+            291,
+            "google",
+            {
+                "attributes": [
+                    "class",
+                    "btn btn--google btn--large",
+                    "href",
+                    "/users/linkages/google/authenticate"
+                ]
+            }
+        ],
+        [
+            182,
+            291,
+            "twitter",
+            {
+                "attributes": [
+                    "class",
+                    "btn btn--twitter btn--large",
+                    "href",
+                    "/users/linkages/twitter/authenticate"
+                ]
+            }
+        ],
+        [
+            181,
+            291,
+            "facebook",
+            {
+                "attributes": [
+                    "class",
+                    "btn btn--facebook btn--large",
+                    "href",
+                    "/users/linkages/facebook/authenticate"
+                ]
+            }
+        ],
+        [
+            90,
+            291,
+            "google",
+            {
+                "attributes": [
+                    "class",
+                    "btn btn--google",
+                    "href",
+                    "/users/linkages/google/authenticate"
+                ]
+            }
+        ],
+        [
+            89,
+            291,
+            "twitter",
+            {
+                "attributes": [
+                    "class",
+                    "btn btn--twitter",
+                    "href",
+                    "/users/linkages/twitter/authenticate"
+                ]
+            }
+        ],
+        [
+            88,
+            291,
+            "facebook",
+            {
+                "attributes": [
+                    "class",
+                    "btn btn--facebook",
+                    "href",
+                    "/users/linkages/facebook/authenticate"
+                ]
+            }
+        ],
+        [
+            159,
+            290,
+            "apple",
+            {
+                "attributes": [
+                    "target",
+                    "_blank",
+                    "onclick",
+                    "BMFront.Helpers.AnalyticsHelper.sendEvent('AppStoreLink', 'StoreTransition', 'Stationary link (Footer)');",
+                    "href",
+                    "https://itunes.apple.com/jp/app/id509979590"
+                ]
+            }
+        ],
+        [
+            156,
+            290,
+            "google",
+            {
+                "attributes": [
+                    "target",
+                    "_blank",
+                    "onclick",
+                    "BMFront.Helpers.AnalyticsHelper.sendEvent('AppStoreLink', 'StoreTransition', 'Stationary link (Footer)');",
+                    "href",
+                    "https://play.google.com/store/apps/details?id=com.bookmeter.android"
+                ]
+            }
+        ],
+        [
+            0,
+            "unknown",
+            [
+                "class",
+                "btn btn--bookmeter btn--large",
+                "href",
+                "/signup"
+            ]
+        ],
+        [
+            0,
+            "unknown",
+            [
+                "class",
+                "btn btn--facebook btn--large",
+                "href",
+                "/users/linkages/facebook/authenticate"
+            ]
+        ]
+    ],
+    "oauth_link": "https://bookmeter.com/login",
+    "button": null,
+    "success": true,
+    "timings": {
+        "navigate": 6.106863498687744,
+        "finished": 16.175671100616455,
+        "exited": 16.193668603897095,
+        "load_event": 1.846300000011921,
+        "finish_event": 16.179400000035763
+    }
+}
+

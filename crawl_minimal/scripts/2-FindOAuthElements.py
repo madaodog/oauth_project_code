@@ -1,4 +1,6 @@
 import time
+import os
+import json
 from difflib import SequenceMatcher
 
 
@@ -487,6 +489,10 @@ class FindOauthLinks(PyChromeScript):
     def target_info_changed(self, **kwargs):
         if kwargs["targetInfo"]["type"] == "page":
             print("Navigated to:", kwargs["targetInfo"]["url"])
+    
+    def extract_domain(self, url):
+        # Extract domain from URL
+        return url.split("//")[-1].split("/")[0]
 
     def exit(self):
         print("Exiting")
@@ -494,5 +500,11 @@ class FindOauthLinks(PyChromeScript):
         self.set_result('oauth_buttons', self.oauth_buttons)
         self.set_result('oauth_link', self.oauth_link)
         self.set_result("button", self.button)
+
+        if not os.path.exists("output"):
+            os.makedirs("output")
+        with open("output/" + self.extract_domain(self.site) + "_oauth_links.json", "w") as f:
+            json.dump(self.result, f)
+
         print("Oauth buttons found: " + str(self.oauth_buttons))
         print(self.site, self.oauth_link, self.oauth_buttons, self.button)

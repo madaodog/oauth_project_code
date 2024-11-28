@@ -1,7 +1,8 @@
 import time
 from crawl_minimal import PyChromeScript
 import urllib.parse
-
+import os
+import json
 
 class FindOAuthElements(PyChromeScript):
     def __init__(self, browser, tab, url, setting, workdir, entry_config):
@@ -409,11 +410,20 @@ class FindOAuthElements(PyChromeScript):
             self.saved_redirects.append(url)
             self.saved_redirects = self.saved_redirects[:1000]
 
+    def extract_domain(self, url):
+        # Extract domain from URL
+        return url.split("//")[-1].split("/")[0]
+
     def exit(self):
         print(self.scopes)
-        self.set_result("site", self.entry_config.get("website", None))
+        self.set_result("site", self.entry_config.get("site", None))
         self.set_result("provider_confirmed", self.provider_confirmed)
         self.set_result("oauth_link", self.url)
         self.set_result("provider", self.provider)
         self.set_result("scopes", self.scopes)
         self.set_result("oauth_button", self.attributes)
+
+        if not os.path.exists("output"):
+            os.makedirs("output")
+        with open("output/" + self.extract_domain(self.entry_config.get("site")) + "_scopes.json", "w") as f:
+            json.dump(self.result, f)

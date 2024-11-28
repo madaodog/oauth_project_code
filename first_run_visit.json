@@ -1,0 +1,31 @@
+{
+    "final_url": {
+        "url": "https://www.facebook.com/login.php?skip_api_login=1&api_key=150044735056473&kid_directed_site=0&app_id=150044735056473&signed_next=1&next=https%3A%2F%2Fwww.facebook.com%2Fdialog%2Foauth%3Fclient_id%3D150044735056473%26redirect_uri%3Dhttps%253A%252F%252Fbookmeter.com%252Fusers%252Flinkages%252Ffacebook%252Fcallback%26state%3DQse4DumFu3UkfPVePNii%26scope%3Dpublic_profile%26ret%3Dlogin%26fbapp_pres%3D0%26logger_id%3D4222b299-f3bf-44a8-9ec0-88bf9b909986%26tp%3Dunspecified&cancel_url=https%3A%2F%2Fbookmeter.com%2Fusers%2Flinkages%2Ffacebook%2Fcallback%3Ferror%3Daccess_denied%26error_code%3D200%26error_description%3DPermissions%2Berror%26error_reason%3Duser_denied%26state%3DQse4DumFu3UkfPVePNii%23_%3D_&display=page&locale=nl_NL&pl_dbl=0",
+        "domain": "www.facebook.com"
+    },
+    "next_urls": [],
+    "site": null,
+    "provider_confirmed": true,
+    "oauth_link": "https://bookmeter.com/signup",
+    "provider": "facebook",
+    "scopes": [
+        [
+            "public_profile",
+            "https://www.facebook.com/login.php?skip_api_login=1&api_key=150044735056473&kid_directed_site=0&app_id=150044735056473&signed_next=1&next=https://www.facebook.com/dialog/oauth?client_id=150044735056473&redirect_uri=https%3A%2F%2Fbookmeter.com%2Fusers%2Flinkages%2Ffacebook%2Fcallback&state=Qse4DumFu3UkfPVePNii&scope=public_profile&ret=login&fbapp_pres=0&logger_id=4222b299-f3bf-44a8-9ec0-88bf9b909986&tp=unspecified&cancel_url=https://bookmeter.com/users/linkages/facebook/callback?error=access_denied&error_code=200&error_description=Permissions+error&error_reason=user_denied&state=Qse4DumFu3UkfPVePNii#_=_&display=page&locale=nl_NL&pl_dbl=0"
+        ]
+    ],
+    "oauth_button": [
+        "class",
+        "btn btn--facebook",
+        "href",
+        "/users/linkages/facebook/authenticate"
+    ],
+    "success": true,
+    "timings": {
+        "navigate": 6.072028636932373,
+        "finished": 16.11955952644348,
+        "exited": 16.125001907348633,
+        "load_event": 1.425900000035763,
+        "finish_event": 8.383300000011921
+    }
+}

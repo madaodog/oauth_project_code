@@ -244,6 +244,8 @@ class PyChromeBrowser():
         else:
             # returning None, we don't want to suppress exceptions
             return None
+    
+    
 
 
 if __name__ == '__main__':

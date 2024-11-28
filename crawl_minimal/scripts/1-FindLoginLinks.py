@@ -1,6 +1,7 @@
 import sys
 import time
 import re
+import os
 
 from crawl_minimal import PyChromeScript
 
@@ -141,9 +142,20 @@ class FindLoginLinks(PyChromeScript):
                 self.login_links.append((self.site,element[2]))
         self.finished = True
 
+    def extract_domain(self, url):
+        # Extract domain from URL
+        return url.split("//")[-1].split("/")[0]
+
 
     def exit(self):
         print("Exiting")
         self.set_result("login_links", self.login_links)
         self.set_result("website", self.site)
+
+        if not os.path.exists('output'):
+            os.makedirs('output')
+        with open('output/' + self.extract_domain(self.site) + '_login_links.txt', 'w') as f:
+            for item in self.login_links:
+                f.write(f"{item}\n")
+                
         print(self.login_links)
